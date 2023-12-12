@@ -108,6 +108,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	total_size = ft_strlen(s1) + ft_strlen(s2);
+	if (total_size == 0)
+		return (NULL);
 	newstr = (char *)malloc(total_size + 1);
 	if (newstr == 0)
 		return (NULL);

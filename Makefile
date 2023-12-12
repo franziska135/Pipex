@@ -1,6 +1,6 @@
 NAME	=	pipex
 INC		=	pipex.h
-CC		=	cc
+CC		=	cc -g
 CFLAGS	=	-Wall -Werror -Wextra
 AR		=	ar rc
 RM		=	rm -f
@@ -18,8 +18,8 @@ $(NAME):	$(OBJ)
 			$(CC) $(OBJ) -o $(NAME)
 
 %.o: %.c	$(INC)
-			$(CC) -c $< -o $@
-#			$(CC) $(CFLAGS) -c $< -o $@
+#			$(CC) -c $< -o $@
+			$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 			$(RM) $(OBJ)

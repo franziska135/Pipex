@@ -15,7 +15,8 @@
 int	command_processing(t_struct *p, char *str)
 {
 	free_commands(p);
-	det_amt_split_commands(p, str);
+	if (det_amt_split_commands(p, str) == 0)
+		return (0);
 	if (!p->working_path)
 	{
 		if (check_envp_paths(p, p->commands[0]) == 0)
@@ -24,29 +25,32 @@ int	command_processing(t_struct *p, char *str)
 	return (1);
 }
 
-void	det_amt_split_commands(t_struct *p, char *arguments)
+int	det_amt_split_commands(t_struct *p, char *arguments)
 {
 	int	i;
 
 	i = 0;
-	p->commands = ft_split(arguments, ' ', 0);
-	if (!p->commands)
-		cleanup(p, EXIT);
-	while (p->commands[i])
+	if (arguments[0])
 	{
-		p->com_amt++;
-		i++;
+		p->commands = ft_split(arguments, ' ', 0);
+		if (!p->commands)
+			cleanup(p, EXIT);
+		while (p->commands[i])
+		{
+			p->com_amt++;
+			i++;
+		}
+		return (1);
 	}
+	return (0);
 }
 
 void	split_envp_paths(t_struct *p, char *envp[])
 {
 	int	i;
-	int	j;
 	int	flag;
 
 	i = 1;
-	j = 0;
 	flag = 0;
 	while (envp[++i])
 	{
@@ -62,10 +66,10 @@ void	split_envp_paths(t_struct *p, char *envp[])
 		if (!p->paths)
 			cleanup(p, EXIT);
 	}
-	count_paths(p);
-	p->paths[0] = ft_strtrim(p->paths[0], "PATH=");
 	if (!p->paths)
 		cleanup(p, EXIT);
+	count_paths(p);
+	p->paths[0] = ft_strtrim(p->paths[0], "PATH=");
 }
 
 int	check_access(t_struct *p)
@@ -76,13 +80,17 @@ int	check_access(t_struct *p)
 		&& access(p->working_path, X_OK) == 0)
 		return (TRUE);
 	else
+	{
+		error = errno;
+		if (error == ENOMEM)
+			cleanup(p, EXIT);
 		return (FALSE);
+	}
 }
 
 int	check_envp_paths(t_struct *p, char *str)
 {
 	int	i;
-	int	flag;
 
 	i = 0;
 	p->working_path = ft_strjoin(p->commands[0], "");

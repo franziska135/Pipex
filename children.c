@@ -17,28 +17,29 @@ void	process_pipes(t_struct *p, int argc, char *argv[], char *envp[])
 	int	i;
 
 	i = 3;
-	first_child(p, argc, argv, envp);
-	waitpid(p->pid_first, NULL, 0);
-	close(p->fd[1]);
+	first_child(p, argv, envp);
+	if (waitpid(p->pid_first, NULL, 0) == -1)
+		cleanup(p, EXIT);
 	dup2(p->fd[0], STDIN_FILENO);
-	close(p->fd[0]);
+	ft_close(p->fd[0], p->fd[1]);
 	while (p->args > 2)
 	{
-		intermediate_child(p, argc, argv[i], envp);
-		waitpid(p->pid_intermediate, NULL, 0);
-		ft_close(p->fd[1], p->fd[0]);
+		intermediate_child(p, argv[i], envp);
+		if (waitpid(p->pid_intermediate, NULL, 0) == -1)
+			cleanup(p, EXIT);
 		dup2(p->fd[0], STDIN_FILENO);
-		close(p->fd[0]);
+		ft_close(p->fd[0], p->fd[1]);
 		p->args--;
 		i++;
 	}
 	last_child(p, argc, argv, envp);
-	waitpid(p->pid_last, NULL, 0);
+	if (waitpid(p->pid_last, NULL, 0) == -1)
+		cleanup(p, EXIT);
 	ft_close(p->outfile, p->fd[0]);
 	close(p->fd[1]);
 }
 
-int	first_child(t_struct *p, int argc, char *argv[], char *envp[])
+int	first_child(t_struct *p, char *argv[], char *envp[])
 {
 	if (pipe(p->fd) == -1)
 		(cleanup(p, EXIT));
@@ -52,12 +53,17 @@ int	first_child(t_struct *p, int argc, char *argv[], char *envp[])
 	if (p->pid_first == 0)
 	{
 		close(p->fd[0]);
-		dup2(p->fd[1], STDOUT_FILENO);
+		if (dup2(p->fd[1], STDOUT_FILENO) == -1)
+			(ft_close(p->fd[1], p->outfile), cleanup(p, EXIT));
 		ft_close(p->fd[1], p->outfile);
 		if (command_processing(p, argv[2]) == 0)
 			cleanup(p, EXIT);
-		if (execv(p->working_path, p->commands) == -1)
-			(cleanup(p, EXIT));
+		if (p->infile > 0)
+		{
+			if (execve(p->working_path, p->commands, envp) == -1)
+				(cleanup(p, EXIT));
+		}
+		cleanup(p, EXIT);
 	}
 	return (1);
 }
@@ -79,13 +85,17 @@ int	last_child(t_struct *p, int argc, char *argv[], char *envp[])
 		ft_close(p->outfile, p->fd[1]);
 		if (command_processing(p, argv[argc - 2]) == 0)
 			cleanup(p, EXIT);
-		if (execv(p->working_path, p->commands) == -1)
-			(cleanup(p, EXIT));
+		if (p->outfile > 0)
+		{
+			if (execve(p->working_path, p->commands, envp) == -1)
+				(cleanup(p, EXIT));
+		}
+		cleanup(p, EXIT);
 	}
 	return (1);
 }
 
-int	intermediate_child(t_struct *p, int argc, char *str, char *envp[])
+int	intermediate_child(t_struct *p, char *str, char *envp[])
 {
 	if (pipe(p->fd) == -1)
 		(cleanup(p, EXIT));
@@ -102,8 +112,12 @@ int	intermediate_child(t_struct *p, int argc, char *str, char *envp[])
 		ft_close(p->fd[1], p->outfile);
 		if (command_processing(p, str) == 0)
 			cleanup(p, EXIT);
-		if (execv(p->working_path, p->commands) == -1)
-			(cleanup(p, EXIT));
+		if (p->fd[0] > 0)
+		{
+			if (execve(p->working_path, p->commands, envp) == -1)
+				cleanup(p, EXIT);
+		}
+		cleanup(p, EXIT);
 	}
 	return (1);
 }

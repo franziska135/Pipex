@@ -58,7 +58,7 @@ typedef struct s_struct
 
 //setup
 int				main(int argc, char *argv[], char *envp[]);
-void			error_check(int argc, char *argv[], t_struct *p);
+void			error_check(int argc, t_struct *p);
 int				find_amount_args(int argc, char *argv[]);
 void			close_files(int infile, int outfile);
 void			init_struct(t_struct *p);
@@ -67,9 +67,9 @@ void			count_paths(t_struct *p);
 int				command_processing(t_struct *p, char *str);
 void			init_struct(t_struct *p);
 int				check_envp_paths(t_struct *p, char *str);
-void			det_amt_split_commands(t_struct *p, char *arguments);
+int				det_amt_split_commands(t_struct *p, char *arguments);
 void			free_commands(t_struct *p);
-int				first_child(t_struct *p, int argc, char *argv[], char *envp[]);
+int				first_child(t_struct *p, char *argv[], char *envp[]);
 void			process_pipes(t_struct *p, int ac, char *av[], char *envp[]);
 void			ft_write_error(int status, char *str);
 void			get_file_descriptors(t_struct *p, int argc, char *argv[]);
@@ -79,16 +79,13 @@ void			access_paths(t_struct *p, char *str);
 char			*ft_strjoin(char *s1, char *s2);
 int				check_access(t_struct *p);
 int				check_child_pid(int child_pid, t_struct *p);
-int				intermediate_child(t_struct *p, int ac, char *str, char *ep[]);
+int				intermediate_child(t_struct *p, char *str, char *ep[]);
 int				last_child(t_struct *p, int argc, char *argv[], char *envp[]);
 //cleanup
 void			cleanup(t_struct *p, int status);
-void			ft_free_double_ptr(char **double_ptr, int amt, t_struct *p);
+void			ft_free_double_ptr(char **double_ptr, int amt);
 
 //libft
-static char		**ft_free(char **matrix);
-static int		ft_amt_words(const char *s, char c);
-static size_t	ft_index(const char *s, char c, size_t i);
 char			**ft_split(char *s, char c, int flag);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 size_t			ft_strlen(const char *s);

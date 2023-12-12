@@ -12,10 +12,8 @@
 
 #include "pipex.h"
 
-void	error_check(int argc, char *argv[], t_struct *p)
+void	error_check(int argc, t_struct *p)
 {
-	int	i;
-
 	p->args = argc - 3;
 	if (argc < 5 || p->args < 2)
 	{
@@ -27,9 +25,11 @@ void	error_check(int argc, char *argv[], t_struct *p)
 void	get_file_descriptors(t_struct *p, int argc, char *argv[])
 {
 	p->infile = open(argv[1], O_RDONLY);
-	p->outfile = open(argv[argc - 1], O_WRONLY | O_CREAT, 664);
-	if (p->infile < 0 || p->outfile < 0)
-		(ft_write_error(OPEN, argv[1]), cleanup(p, EXIT));
+	if (p->infile < 0)
+		(ft_write_error(OPEN, argv[1]));
+	p->outfile = open(argv[argc - 1], O_TRUNC |O_WRONLY | O_CREAT, 664);
+	if (p->outfile < 0)
+		(ft_write_error(OPEN, argv[argc -1]));
 }
 
 void	ft_write_error(int status, char *str)
