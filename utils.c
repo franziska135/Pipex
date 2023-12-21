@@ -25,10 +25,12 @@ void	count_paths(t_struct *p)
 	}
 }
 
-void	ft_close(int firstfile, int secondfile)
+void	ft_close(t_struct *p, int firstfile, int secondfile)
 {
-	close(firstfile);
-	close(secondfile);
+	if (close(firstfile) == -1)
+		cleanup(p, EXIT);
+	if (close(secondfile) == -1)
+		cleanup(p, EXIT);
 }
 
 size_t	ft_strlen(const char *s)

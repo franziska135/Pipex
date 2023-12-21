@@ -111,7 +111,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (total_size == 0)
 		return (NULL);
 	newstr = (char *)malloc(total_size + 1);
-	if (newstr == 0)
+	if (!newstr)
 		return (NULL);
 	while (s1[i] != '\0')
 	{

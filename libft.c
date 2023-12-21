@@ -12,21 +12,25 @@
 
 #include "pipex.h"
 
-static char	**ft_free(char **matrix)
+char	**ft_free(char **matrix)
 {
 	int	i;
 
 	i = 0;
-	while (matrix[i])
+	if (matrix)
 	{
-		free(matrix[i]);
-		i++;
+		while (matrix[i])
+		{
+			free(matrix[i]);
+			i++;
+		}
+		free(matrix);
+		matrix = NULL;
 	}
-	free(matrix);
 	return (NULL);
 }
 
-static int	ft_amt_words(const char *s, char c)
+int	ft_amt_words(const char *s, char c)
 {
 	int	i;
 	int	old_i;
@@ -62,6 +66,7 @@ char	**ft_split(char *s, char c, int flag)
 	int		i;
 	int		j;
 
+	matrix = NULL;
 	j = 0;
 	i = 0;
 	matrix = malloc((ft_amt_words(s, c) + 1) * sizeof(char *));
@@ -73,7 +78,7 @@ char	**ft_split(char *s, char c, int flag)
 			i++;
 		matrix[j] = ft_substr(s, i, ft_index(s, c, i) - i, flag);
 		if (!matrix[j])
-			return (ft_free(matrix));
+			return (ft_free(matrix), NULL);
 		i = ft_index(s, c, i) + 1;
 		j++;
 	}
@@ -81,19 +86,3 @@ char	**ft_split(char *s, char c, int flag)
 	return (matrix);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (s1[i] == s2[i] && s1[i] != '\0' && s2[i] != '\0' && i < n)
-		i++;
-	if (i == n || (s1[i] == '\0' && s2[i] == '\0'))
-		return (0);
-	else if ((unsigned char)s1[i] > (unsigned char)s2[i])
-		return (1);
-	else if ((unsigned char)s1[i] < (unsigned char)s2[i])
-		return (-1);
-	else
-		return (0);
-}

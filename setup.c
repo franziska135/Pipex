@@ -27,7 +27,7 @@ void	get_file_descriptors(t_struct *p, int argc, char *argv[])
 	p->infile = open(argv[1], O_RDONLY);
 	if (p->infile < 0)
 		(ft_write_error(OPEN, argv[1]));
-	p->outfile = open(argv[argc - 1], O_TRUNC |O_WRONLY | O_CREAT, 664);
+	p->outfile = open(argv[argc - 1], O_TRUNC | O_WRONLY | O_CREAT, 0644);
 	if (p->outfile < 0)
 		(ft_write_error(OPEN, argv[argc -1]));
 }

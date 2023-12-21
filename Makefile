@@ -1,30 +1,42 @@
 NAME	=	pipex
-INC		=	pipex.h
-CC		=	cc -g
-CFLAGS	=	-Wall -Werror -Wextra
+NAME2	=	pipex_bonus
+INC		= 	pipex.h
+CC		=	cc
+CFLAGS	=	-g
+# CFLAGS	=	-Wall -Wextra -Werror -g
 AR		=	ar rc
 RM		=	rm -f
 
-SRC		=	pipex.c cleanup.c libft.c envp.c setup.c children.c utils.c \
-			libft2.c
+SRC		=	children.c cleanup.c envp.c libft2.c libft.c\
+			pipex.c setup.c	utils.c
 
-OBJ		=	$(SRC:.c=.o)
+SRC2	=	pipex_bonus.c cleanup.c envp.c libft2.c libft.c\
+			setup.c	utils.c pipex.c
+
+OBJS	=	$(SRC:.c=.o)
+OBJS2	=	$(SRC2:.c=.o)
 
 .PHONY:		all clean fclean re
 
 all:		$(NAME)
 
-$(NAME):	$(OBJ)
-			$(CC) $(OBJ) -o $(NAME)
+all2:		$(NAME2)
 
-%.o: %.c	$(INC)
-#			$(CC) -c $< -o $@
+$(NAME): 	$(OBJS)
+			$(CC) $(OBJS) -o $(NAME)
+
+$(NAME2):	$(OBJS2)
+			$(CC) $(OBJS2) -o $(NAME2)
+
+%.o: %.c 	$(INC)
 			$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-			$(RM) $(OBJ)
+			$(RM) $(OBJS) $(OBJS2)
 
-fclean:		clean
-			$(RM) $(NAME)
+fclean: 	clean
+			$(RM) $(NAME) $(NAME2)
 
 re:			clean all
+
+bonus:		clean all2

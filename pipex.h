@@ -69,18 +69,18 @@ void			init_struct(t_struct *p);
 int				check_envp_paths(t_struct *p, char *str);
 int				det_amt_split_commands(t_struct *p, char *arguments);
 void			free_commands(t_struct *p);
-int				first_child(t_struct *p, char *argv[], char *envp[]);
+int				first_child(t_struct *p, char *envp[]);
 void			process_pipes(t_struct *p, int ac, char *av[], char *envp[]);
 void			ft_write_error(int status, char *str);
 void			get_file_descriptors(t_struct *p, int argc, char *argv[]);
-void			ft_close(int firstfile, int secondfile);
+void			ft_close(t_struct *p, int firstfile, int secondfile);
 //run
 void			access_paths(t_struct *p, char *str);
 char			*ft_strjoin(char *s1, char *s2);
 int				check_access(t_struct *p);
 int				check_child_pid(int child_pid, t_struct *p);
-int				intermediate_child(t_struct *p, char *str, char *ep[]);
-int				last_child(t_struct *p, int argc, char *argv[], char *envp[]);
+int				intermediate_child(t_struct *p, char *ep[]);
+int				last_child(t_struct *p, char *envp[]);
 //cleanup
 void			cleanup(t_struct *p, int status);
 void			ft_free_double_ptr(char **double_ptr, int amt);
@@ -95,5 +95,5 @@ char			*ft_strtrim(char *s1, char const *set);
 char			*ft_strchr(const char *s, int c);
 char			*ft_substr(char *s, unsigned int start, size_t len, int flag);
 char			*ft_strtrim(char *s1, char const *set);
-char				*ft_strjoin(char *s1, char *s2);
+char			*ft_strjoin(char *s1, char *s2);
 #endif
